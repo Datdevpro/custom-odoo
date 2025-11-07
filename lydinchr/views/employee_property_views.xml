@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- Employee Property Tree View -->
+        <record id="view_employee_property_tree" model="ir.ui.view">
+            <field name="name">employee.property.tree</field>
+            <field name="model">employee.property</field>
+            <field name="arch" type="xml">
+                <tree string="Employee Properties">
+                    <field name="employee_id"/>
+                    <field name="name"/>
+                    <field name="category"/>
+                    <field name="value"/>
+                    <field name="date"/>
+                    <field name="status"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Employee Property Form View -->
+        <record id="view_employee_property_form" model="ir.ui.view">
+            <field name="name">employee.property.form</field>
+            <field name="model">employee.property</field>
+            <field name="arch" type="xml">
+                <form string="Employee Property">
+                    <sheet>
+                        <group>
+                            <group string="Property Information">
+                                <field name="employee_id"/>
+                                <field name="name"/>
+                                <field name="category"/>
+                                <field name="status"/>
+                            </group>
+                            <group string="Details">
+                                <field name="value"/>
+                                <field name="date"/>
+                                <field name="return_date"/>
+                                <field name="active"/>
+                            </group>
+                        </group>
+                        <group string="Notes">
+                            <field name="notes" nolabel="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Employee Property Search View -->
+        <record id="view_employee_property_search" model="ir.ui.view">
+            <field name="name">employee.property.search</field>
+            <field name="model">employee.property</field>
+            <field name="arch" type="xml">
+                <search string="Search Employee Properties">
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="category"/>
+                    <field name="value"/>
+                    <filter string="Assigned" name="assigned" domain="[('status', '=', 'assigned')]"/>
+                    <filter string="Returned" name="returned" domain="[('status', '=', 'returned')]"/>
+                    <filter string="Equipment" name="equipment" domain="[('category', '=', 'equipment')]"/>
+                    <filter string="Document" name="document" domain="[('category', '=', 'document')]"/>
+                    <filter string="Asset" name="asset" domain="[('category', '=', 'asset')]"/>
+                    <separator/>
+                    <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                    <filter string="Archived" name="archived" domain="[('active', '=', False)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Employee" name="group_employee" context="{'group_by': 'employee_id'}"/>
+                        <filter string="Category" name="group_category" context="{'group_by': 'category'}"/>
+                        <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+                        <filter string="Assignment Date" name="group_date" context="{'group_by': 'date'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action for Employee Property -->
+        <record id="action_employee_property" model="ir.actions.act_window">
+            <field name="name">Employee Properties</field>
+            <field name="res_model">employee.property</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_employee_property_search"/>
+            <field name="context">{'search_default_assigned': 1, 'search_default_active': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new employee property
+                </p>
+                <p>
+                    Track equipment, documents, assets, and other properties assigned to employees.
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu Items -->
+        <menuitem id="menu_lydinchr_root"
+                  name="Lydinc HR"
+                  web_icon="lydinchr,static/description/icon.png"
+                  sequence="50"/>
+
+        <menuitem id="menu_employee_property"
+                  name="Employee Properties"
+                  parent="menu_lydinchr_root"
+                  action="action_employee_property"
+                  sequence="10"/>
+
+    </data>
+</odoo>
+

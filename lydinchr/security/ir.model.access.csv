@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_employee_property_user,employee.property.user,model_employee_property,group_hr_custom_user,1,0,0,0
+access_employee_property_manager,employee.property.manager,model_employee_property,group_hr_custom_manager,1,1,1,1
+access_employee_property_hr_officer,employee.property.hr.officer,model_employee_property,hr.group_hr_manager,1,1,1,1
+

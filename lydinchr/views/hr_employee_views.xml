@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Extend Employee Form View -->
+        <record id="view_employee_form_extended" model="ir.ui.view">
+            <field name="name">hr.employee.form.extended</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                
+                <!-- Add badge number after barcode field -->
+                <xpath expr="//field[@name='barcode']" position="after">
+                    <field name="employee_badge_number"/>
+                    <field name="joining_date"/>
+                </xpath>
+
+                <!-- Add Salary Information page in notebook -->
+                <xpath expr="//notebook" position="inside">
+                    <page string="Salary Information" name="salary_info">
+                        <group>
+                            <group string="Salary Components">
+                                <field name="currency_id" invisible="1"/>
+                                <field name="basic_salary"/>
+                                <field name="housing_allowance"/>
+                                <field name="transport_allowance"/>
+                                <field name="other_allowance"/>
+                            </group>
+                            <group string="Total">
+                                <field name="total_salary" widget="monetary" readonly="1"/>
+                            </group>
+                        </group>
+                    </page>
+                    
+                    <page string="Emergency Contact" name="emergency_contact">
+                        <group>
+                            <group string="Emergency Contact Details">
+                                <field name="emergency_contact_name"/>
+                                <field name="emergency_contact_relationship"/>
+                                <field name="emergency_contact_phone" widget="phone"/>
+                            </group>
+                            <group>
+                                <field name="emergency_contact_address"/>
+                            </group>
+                        </group>
+                    </page>
+                    
+                    <page string="Properties" name="properties">
+                        <field name="property_ids">
+                            <tree>
+                                <field name="date"/>
+                                <field name="category"/>
+                                <field name="name"/>
+                                <field name="value"/>
+                                <field name="status"/>
+                            </tree>
+                        </field>
+                        <group>
+                            <field name="property_count" string="Assigned Properties"/>
+                        </group>
+                    </page>
+                </xpath>
+                
+            </field>
+        </record>
+
+        <!-- Employee Tree View Extension -->
+        <record id="view_employee_tree_extended" model="ir.ui.view">
+            <field name="name">hr.employee.tree.extended</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='work_location_id']" position="after">
+                    <field name="joining_date" optional="show"/>
+                    <field name="total_salary" optional="hide"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>
+
