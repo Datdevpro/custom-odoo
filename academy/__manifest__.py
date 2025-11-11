@@ -11,7 +11,7 @@
     "data": [
         "security/ir.model.access.csv",
         "views/course_views.xml",
-        "views/academy_menu.xml",
+        "views/academy_menu.xml",   
        
     ],
     "installable": True,

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Extend Employee Form View - Thêm phần quản lý nhiều managers -->
+        <record id="view_employee_form_custom_managers" model="ir.ui.view">
+            <field name="name">hr.employee.form.custom.managers</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <!-- Thêm trường manager_ids ngay sau trường parent_id (Manager) -->
+                <xpath expr="//field[@name='parent_id']" position="after">
+                    <field name="manager_ids" 
+                           widget="many2many_tags" 
+                           string="Additional Managers"
+                           domain="[('id', '!=', id), ('id', '!=', parent_id)]"
+                           context="{'default_company_id': company_id}"
+                           help="Danh sách các người quản lý bổ sung. Nhân viên này có thể được quản lý bởi nhiều người."/>
+                    <!-- Dùng ký tự khoảng trắng không ngắt (NBSP) để tách số và nhãn -->
+                    <field name="manager_count" widget="statinfo" string="&#160;Total Managers"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Extend Employee Tree View - Hiển thị số lượng managers -->
+        <record id="view_employee_tree_custom_managers" model="ir.ui.view">
+            <field name="name">hr.employee.tree.custom.managers</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='parent_id']" position="after">
+                    <field name="manager_count" string="Managers" optional="show" widget="integer"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Extend Search View - Tìm kiếm theo managers -->
+        <record id="view_employee_filter_custom_managers" model="ir.ui.view">
+            <field name="name">hr.employee.search.custom.managers</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='parent_id']" position="after">
+                    <field name="manager_ids" string="Additional Managers" 
+                           domain="[('company_id', 'in', allowed_company_ids)]"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
+
