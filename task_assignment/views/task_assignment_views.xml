@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Action -->
+        <record id="action_task_assignment" model="ir.actions.act_window">
+            <field name="name">Tasks</field>
+            <field name="res_model">task.assignment</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="context">{'default_assigner_id': uid}</field>
+        </record>
+
+        <!-- Menu -->
+        <menuitem id="menu_task_assignment_root" name="Task Assignment" sequence="10" parent="hr.menu_hr_root" groups="task_assignment.group_task_assignment_user"/>
+        <menuitem id="menu_task_assignment_tasks" name="All Tasks" parent="menu_task_assignment_root" action="action_task_assignment" sequence="10" groups="task_assignment.group_task_assignment_user"/>
+
+        <!-- Search view -->
+        <record id="view_task_assignment_search" model="ir.ui.view">
+            <field name="name">task.assignment.search</field>
+            <field name="model">task.assignment</field>
+            <field name="arch" type="xml">
+                <search string="Search Tasks">
+                    <field name="name"/>
+                    <field name="assigner_id"/>
+                    <field name="assignee_ids"/>
+                    <separator/>
+                    <filter string="My Tasks" name="my_tasks" domain="['|', ('assigner_id', '=', uid), ('assignee_ids', 'in', [uid])]"/>
+                    <separator/>
+                    <group>
+                        <filter string="Assigner" name="group_assigner" context="{'group_by': 'assigner_id'}"/>
+                        <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- List view -->
+        <record id="view_task_assignment_list" model="ir.ui.view">
+            <field name="name">task.assignment.list</field>
+            <field name="model">task.assignment</field>
+            <field name="arch" type="xml">
+                <list decoration-danger="state == 'cancelled'" decoration-warning="state == 'in_progress'">
+                    <field name="name"/>
+                    <field name="assigner_id"/>
+                    <field name="assignee_count" string="Assignees"/>
+                    <field name="priority"/>
+                    <field name="state"/>
+                    <field name="start_date"/>
+                    <field name="deadline"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Kanban view -->
+        <record id="view_task_assignment_kanban" model="ir.ui.view">
+            <field name="name">task.assignment.kanban</field>
+            <field name="model">task.assignment</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="state">
+                    <field name="name"/>
+                    <field name="description"/>
+                    <field name="assigner_id"/>
+                    <field name="assignee_ids"/>
+                    <field name="priority"/>
+                    <field name="deadline"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_card">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <strong><field name="name"/></strong>
+                                        <div class="text-muted small"><field name="assigner_id"/></div>
+                                    </div>
+                                    <div class="o_priority">
+                                        <field name="priority" widget="priority"/>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="o_kanban_tags">
+                                        <field name="assignee_ids" widget="many2many_tags"/>
+                                    </div>
+                                    <div class="text-muted small mt-1" t-if="record.deadline.raw_value">
+                                        <span class="fa fa-clock-o me-1"/> <field name="deadline" options="{'time_only': False}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Form view -->
+        <record id="view_task_assignment_form" model="ir.ui.view">
+            <field name="name">task.assignment.form</field>
+            <field name="model">task.assignment</field>
+            <field name="arch" type="xml">
+                <form string="Task" class="o_task_assignment_form">
+                    <header>
+                        <button name="action_start" type="object" string="Start" invisible="state != 'draft'" class="btn-primary"/>
+                        <button name="action_done" type="object" string="Mark Done" invisible="state not in ('draft', 'in_progress')" class="btn-success"/>
+                        <button name="action_cancel" type="object" string="Cancel" invisible="state not in ('draft', 'in_progress')" class="btn-secondary"/>
+                        <button name="action_reset" type="object" string="Reset" invisible="state not in ('done', 'cancelled')" class="btn-secondary"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,done,cancelled"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="priority" widget="priority"/>
+                                <field name="assigner_id"/>
+                                <field name="assignee_ids" widget="many2many_tags" context="{'default_company_id': company_id}"/>
+                            </group>
+                            <group>
+                                <field name="start_date"/>
+                                <field name="deadline"/>
+                                <field name="completion_date" readonly="1"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Description">
+                                <field name="description" nolabel="1" placeholder="Task details..."/>
+                            </page>
+                            <page string="Followers &amp; Activities">
+                                <field name="message_follower_ids" widget="mail_followers" nolabel="1"/>
+                                <field name="activity_ids" widget="mail_activity" nolabel="1"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

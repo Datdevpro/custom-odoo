@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_task_assignment_user,task.assignment.user,model_task_assignment,task_assignment.group_task_assignment_user,1,1,1,0
+access_task_assignment_manager,task.assignment.manager,model_task_assignment,task_assignment.group_task_assignment_manager,1,1,1,1

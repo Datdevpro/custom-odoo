@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Privilege category for task assignment groups -->
+        <record id="res_groups_privilege_task_assignment" model="res.groups.privilege">
+            <field name="name">Task Assignment</field>
+            <field name="sequence">80</field>
+            <field name="category_id" ref="base.module_category_productivity"/>
+        </record>
+
+        <record id="group_task_assignment_user" model="res.groups">
+            <field name="name">Task Assignment User</field>
+            <field name="privilege_id" ref="res_groups_privilege_task_assignment"/>
+            <field name="sequence">10</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_task_assignment_manager" model="res.groups">
+            <field name="name">Task Assignment Manager</field>
+            <field name="privilege_id" ref="res_groups_privilege_task_assignment"/>
+            <field name="sequence">20</field>
+            <field name="implied_ids" eval="[(4, ref('group_task_assignment_user')), (4, ref('hr.group_hr_manager'))]"/>
+        </record>
+
+        <!-- Record rules -->
+        <record id="task_assignment_rule_user" model="ir.rule">
+            <field name="name">Task Assignment limited access</field>
+            <field name="model_id" ref="model_task_assignment"/>
+            <field name="groups" eval="[(4, ref('group_task_assignment_user'))]"/>
+            <field name="domain_force">['|', ('assigner_id', '=', user.id), ('assignee_ids', 'in', [user.id])]</field>
+        </record>
+
+        <record id="task_assignment_rule_manager" model="ir.rule">
+            <field name="name">Task Assignment manager full access</field>
+            <field name="model_id" ref="model_task_assignment"/>
+            <field name="groups" eval="[(4, ref('group_task_assignment_manager'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+    </data>
+</odoo>
